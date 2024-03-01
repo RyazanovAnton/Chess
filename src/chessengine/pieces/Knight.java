@@ -2,13 +2,13 @@ package chessengine.pieces;
 
 import chessengine.Alliance;
 import chessengine.board.Board;
+import chessengine.board.BoardUtils;
 import chessengine.board.Move;
 import chessengine.board.Tile;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+import static chessengine.board.Move.*;
 
 public class Knight extends Piece{
 
@@ -17,28 +17,51 @@ public class Knight extends Piece{
         super(piecePosition, pieceAlliance);
     }
     @Override
-    public List<Move> calculateLegalMoves(Board board) {
-        int candidateDestinationCoordinate;
+    public Collection<Move> calculateLegalMoves(final Board board) {
         final List<Move> legalMoves = new ArrayList<>();
-        for (final int currentCandidate : CANDIDATE_MOVE_COORDINATES){
-            candidateDestinationCoordinate = this.piecePosition + currentCandidate;
-            if(true /*isValidTileCoordinate*/){
+        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES){      // перебрать все возможные смещения фигуры
+            final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;     // проверяем те ходы, которые находятся внутри игрового поля
+            if(BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)){
+
+                if(isFirstColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                        isSecondColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                        isSevenColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                        isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)){
+                    continue;
+                }
+
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                if(!candidateDestinationTile.isTileOccupied()){
-                    legalMoves.add(new Move());
+                if(!candidateDestinationTile.isTileOccupied()){         // если плитка не занята
+                    legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                 } else {
                     final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
-                    if(this.pieceAlliance != pieceAlliance){
-                        legalMoves.add(new Move());
+                    if(this.pieceAlliance != pieceAlliance){            // если плитка занята фигурой противника
+                        legalMoves.add(new AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                     }
                 }
             }
         }
 
-
-
-
         return Collections.unmodifiableList(legalMoves);
     }
+
+    private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -17 || candidateOffset == -10 ||
+                candidateOffset == 6 || candidateOffset == 15);
+    }
+
+    private static boolean isSecondColumnExclusion(final  int currentPosition, final int candidateOffset){
+        return BoardUtils.SECOND_COLUMN[currentPosition]  && (candidateOffset == -10 || candidateOffset == 6);
+    }
+
+    private static boolean isSevenColumnExclusion(final  int currentPosition, final int candidateOffset){
+        return BoardUtils.SEVENTH_COLUMN[currentPosition]  && (candidateOffset == -6 || candidateOffset == 10);
+    }
+
+    private static boolean isEighthColumnExclusion(final  int currentPosition, final int candidateOffset){
+        return BoardUtils.EIGHTH_COLUMN[currentPosition]  && (candidateOffset == -15 || candidateOffset == -6 ||
+                candidateOffset == 10 || candidateOffset == 17);
+    }
+
 }
