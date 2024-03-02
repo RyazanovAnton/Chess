@@ -13,8 +13,9 @@ import static chessengine.board.Move.*;
 public class Knight extends Piece{
 
     private final static int[] CANDIDATE_MOVE_COORDINATES = {-17, -15, -10, -6, 6, 10, 15, 17 };
-    Knight(final int piecePosition, final Alliance pieceAlliance) {
-        super(piecePosition, pieceAlliance);
+    public Knight(final Alliance pieceAlliance, final int piecePosition) {
+
+        super(PieceType.KNIGHT, piecePosition, pieceAlliance);
     }
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
@@ -45,7 +46,15 @@ public class Knight extends Piece{
 
         return Collections.unmodifiableList(legalMoves);
     }
+    @Override
+    public Knight movePiece(Move move) {
+        return new Knight(move.getMovedPiece().pieceAlliance, move.getDestinationCoordinate());
+    }
 
+    @Override
+    public String toString(){
+        return PieceType.KNIGHT.toString();
+    }
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){
         return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -17 || candidateOffset == -10 ||
                 candidateOffset == 6 || candidateOffset == 15);
