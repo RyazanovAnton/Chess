@@ -7,5 +7,6 @@ public class JChess {
         System.out.println(board);
 
         Table table = new Table();
+        System.out.println("03/03/2024");
     }
 }
