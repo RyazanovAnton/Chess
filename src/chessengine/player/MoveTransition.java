@@ -3,23 +3,25 @@ package chessengine.player;
 import chessengine.board.Board;
 import chessengine.board.Move;
 
-import java.util.concurrent.Future;
-
 public class MoveTransition {
-    private final Board transmitBoard;
+    private final Board transitionBoard;
     private final Move move;
     private final MoveStatus moveStatus;
 
 
-    public MoveTransition(final Board transmitBoard,
+    public MoveTransition(final Board transitiontBoard,
                           final Move move,
                           final MoveStatus moveStatus) {
-        this.transmitBoard = transmitBoard;
+        this.transitionBoard = transitiontBoard;
         this.move = move;
         this.moveStatus = moveStatus;
     }
 
     public MoveStatus getMoveStatus() {
         return this.moveStatus;
+    }
+
+    public Board getTransitionBoard() {
+        return this.transitionBoard;
     }
 }

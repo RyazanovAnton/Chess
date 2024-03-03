@@ -12,7 +12,7 @@ public class Board {
 
 
 
-    private List<Tile> gameBoard;
+    private final List<Tile> gameBoard;
     private final Collection<Piece> whitePieces;
     private final Collection<Piece> blackPieces;
 
@@ -29,6 +29,7 @@ public class Board {
         this.whitePlayer = new WhitePlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         this.blackPlayer = new BlackPlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.whitePlayer, this.blackPlayer);
+        //this.currentPlayer = null;
     }
     @Override
     public String toString(){
@@ -160,6 +161,7 @@ public class Board {
         Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
+        Move transitionMove;
 
         public Builder(){
             this.boardConfig = new HashMap<>();
@@ -179,5 +181,11 @@ public class Board {
         public void setEnPassantPawn(Pawn enPassantPawn) {
             this.enPassantPawn = enPassantPawn;
         }
+        public Builder setMoveTransition(final Move transitMove){
+            this.transitionMove = transitMove;
+            return this;
+        }
     }
 }
+
+
