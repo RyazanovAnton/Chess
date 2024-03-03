@@ -18,13 +18,15 @@ public abstract class Player {
     private final boolean isInCheck;
 
     Player(final Board board,
-           final Collection<Move> legalMoves,
-           final Collection<Move> opponentMoves){
-
+           final Collection<Move> playerLegals,
+           final Collection<Move> opponentLegals) {
         this.board = board;
-        this.playerKing = estabilishKing();
-        this.legalMoves = legalMoves;
-        this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentMoves).isEmpty();
+        this.playerKing = establishKing();
+        this.isInCheck = !calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
+        playerLegals.addAll(calculateKingCastles(playerLegals, opponentLegals));
+        this.legalMoves = Collections.unmodifiableCollection(playerLegals);
+
+        //this.legalMoves = playerLegals;
     }
 
     public King getPlayerKing(){
@@ -33,7 +35,7 @@ public abstract class Player {
     public Collection<Move> getLegalMoves(){
         return this.legalMoves;
     }
-    private static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> moves) {
+    protected static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> moves) {
         final List<Move> attackMoves = new ArrayList<>();
         for (final Move move : moves){
             if(piecePosition == move.getDestinationCoordinate()){
@@ -43,7 +45,7 @@ public abstract class Player {
         return Collections.unmodifiableList(attackMoves);
     }
 
-    private King estabilishKing() {
+    private King establishKing() {
         for(final Piece piece : getActivePieces()){
             if(piece.getPieceType().isKing()){
                 return (King) piece;
@@ -101,4 +103,6 @@ public abstract class Player {
     public abstract Collection<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
+
+    protected abstract Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentsLegals);
 }
