@@ -53,7 +53,7 @@ public class Table {
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.boardDirection = BoardDirection.NORMAL;
-        this.highLightLegalMoves = false;
+        this.highLightLegalMoves = true;
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setVisible(true);
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
@@ -92,18 +92,26 @@ public class Table {
     }
     private JMenu createPreferencesMenu(){
         final JMenu preferencesMenu = new JMenu("Preferences");
-        final JMenuItem flipBoardMenuItem = new JMenuItem("Flip Board");
+//        final JMenuItem flipBoardMenuItem = new JMenuItem("Flip Board");
+//        flipBoardMenuItem.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(final ActionEvent e) {
+//                boardDirection = boardDirection.opposite();
+//                boardPanel.drawBoard(chessBoard);
+//                System.out.println("Flip!");
+//            }
+//        });
+        final JCheckBoxMenuItem flipBoardMenuItem = new JCheckBoxMenuItem("Flip Board", false);
         flipBoardMenuItem.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(final ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 boardDirection = boardDirection.opposite();
                 boardPanel.drawBoard(chessBoard);
-                System.out.println("Flip!");
             }
         });
         preferencesMenu.add(flipBoardMenuItem);
         preferencesMenu.addSeparator();
-        final JCheckBoxMenuItem legalMoveHighlighterCheckbox = new JCheckBoxMenuItem("Highlight Legal Moves", false);
+        final JCheckBoxMenuItem legalMoveHighlighterCheckbox = new JCheckBoxMenuItem("Highlight Legal Moves", true);
         legalMoveHighlighterCheckbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,7 +139,6 @@ public class Table {
             List<TilePanel> traverse(List<TilePanel> boardTiles) {
                  Collections.reverse(boardTiles);
                  return boardTiles;
-
             }
             @Override
             BoardDirection opposite() {
