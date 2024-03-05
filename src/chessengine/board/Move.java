@@ -131,10 +131,6 @@ public abstract class Move {
             return super.equals(otherAttackMove) && getAttackedPiece().equals(otherAttackMove.getAttackedPiece());
         }
         @Override
-        public Board execute() {
-            return null;
-        }
-        @Override
         public boolean isAttack(){
             return true;
         }
@@ -157,6 +153,16 @@ public abstract class Move {
                               final Piece attackedPiece) {
             super(board, movedPiece, destinationCoordinate, attackedPiece);
         }
+        @Override
+        public boolean equals(final  Object other){
+            return this == other || other instanceof PawnAttackMove && super.equals(other);
+        }
+        @Override
+        public String toString(){
+            return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPiecePosition()).substring(0,1) +
+                    "x" + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+        }
+
     }
     public static final class PawnEnPassantAttackMove extends PawnAttackMove{
         public PawnEnPassantAttackMove(final Board board,
@@ -268,11 +274,15 @@ public abstract class Move {
     }
     public static final class NullMove extends Move{
         public NullMove() {
-            super(null, -1);
+            super(null, 65);  // неверное мустоназначение
         }
         @Override
         public Board execute(){
         throw new RuntimeException("Can't execute the NULL move");
+        }
+        @Override
+        public int getCurrentCoordinate(){
+            return -1; // Возвращаем несуществующую координату для любой фигуры
         }
     }
 
