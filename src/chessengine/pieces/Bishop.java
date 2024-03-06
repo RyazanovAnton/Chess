@@ -4,7 +4,6 @@ import chessengine.Alliance;
 import chessengine.board.Board;
 import chessengine.board.BoardUtils;
 import chessengine.board.Move;
-import chessengine.board.Move.AttackMove;
 import chessengine.board.Move.MajorMove;
 import chessengine.board.Tile;
 
@@ -12,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static chessengine.board.Move.*;
 
 public class Bishop extends Piece{
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -7, 7, 9};
@@ -46,7 +47,7 @@ public class Bishop extends Piece{
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                         if(this.pieceAlliance != pieceAlliance){            // если плитка занята фигурой противника
-                            legalMoves.add(new AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
                     }

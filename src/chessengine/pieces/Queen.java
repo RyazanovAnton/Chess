@@ -4,6 +4,7 @@ import chessengine.Alliance;
 import chessengine.board.Board;
 import chessengine.board.BoardUtils;
 import chessengine.board.Move;
+import chessengine.board.Move.MajorAttackMove;
 import chessengine.board.Tile;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class Queen extends Piece{
                         final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                         final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                         if(this.pieceAlliance != pieceAlliance){            // если плитка занята фигурой противника
-                            legalMoves.add(new Move.AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
                     }

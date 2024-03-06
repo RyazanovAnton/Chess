@@ -4,9 +4,7 @@ import chessengine.Alliance;
 import chessengine.board.Board;
 import chessengine.board.BoardUtils;
 import chessengine.board.Move;
-import chessengine.board.Move.MajorMove;
-import chessengine.board.Move.PawnAttackMove;
-import chessengine.board.Move.PawnJump;
+import chessengine.board.Move.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,10 +38,10 @@ public class Pawn extends Piece{
             }
             if (currentCoordinateOffset == 8 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
                 // Еще не готово!!!
-                legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
             } else if (currentCoordinateOffset == 16 && this.isFirstMove() &&
                     ((BoardUtils.SEVENTH_ROW[this.piecePosition] && this.getPieceAlliance().isBlack()) ||
-                    (BoardUtils.SECOND_ROW[this.piecePosition] && this.getPieceAlliance().isWhite()))) {
+                            (BoardUtils.SECOND_ROW[this.piecePosition] && this.getPieceAlliance().isWhite()))) {
                 final int behindCandidateDestinationCoordinate = this.piecePosition + (this.pieceAlliance.gerDirection() * 8);
                 if (!board.getTile(behindCandidateDestinationCoordinate).isTileOccupied() &&
                         !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
@@ -59,7 +57,25 @@ public class Pawn extends Piece{
                         legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                     }
                 }
-
+                else if (board.getEnPassantPawn() != null && board.getEnPassantPawn().getPiecePosition() ==
+                        (this.piecePosition + (this.pieceAlliance.getOppositeDirection()))) {
+                    final Piece pieceOnCandidate = board.getEnPassantPawn();
+                    if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+                        System.out.println("HRRR7");
+                        legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        //legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
+//                        new PawnEnPassantAttackMove(
+//                                board,
+//                                this,
+//                                candidateDestinationCoordinate,
+//                                pieceOnCandidate)
+//                } else if (board.getEnPassantPawn() != null) {
+//                    if (board.getEnPassantPawn().getPiecePosition() == this.piecePosition + (this.pieceAlliance.getOppositeDirection())) {
+//                        final Piece pieceOnCandidate = board.getEnPassantPawn();
+//                        if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+//                            legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        }
+                    }
             } else if (currentCoordinateOffset == 9 &&
                     !((BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() ||
                             (BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack())))) {
@@ -69,10 +85,18 @@ public class Pawn extends Piece{
                         //TODO ATTACK???
                         legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                     }
+                } else if (board.getEnPassantPawn() != null) {
+                    if (board.getEnPassantPawn().getPiecePosition() == this.piecePosition - (this.pieceAlliance.getOppositeDirection())) {
+                        final Piece pieceOnCandidate = board.getEnPassantPawn();
+                        if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+                            System.out.println("HRRR9");
+                            legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                            //legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
+                        }
+                    }
                 }
             }
         }
-
                 return Collections.unmodifiableList(legalMoves);
             }
     @Override

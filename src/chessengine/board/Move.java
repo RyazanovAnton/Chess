@@ -1,6 +1,5 @@
 package chessengine.board;
 
-import chessengine.Alliance;
 import chessengine.pieces.Pawn;
 import chessengine.pieces.Piece;
 import chessengine.pieces.Rook;
@@ -88,6 +87,23 @@ public abstract class Move {
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
         return builder.build();
     }
+    public static class MajorAttackMove extends AttackMove{
+        public MajorAttackMove(final Board board,
+                               final Piece pieceMoved,
+                               final int destinationCoordinate,
+                               final Piece pieceAttacked){
+            super(board, pieceMoved, destinationCoordinate, pieceAttacked);
+        }
+        @Override
+        public boolean equals(final Object other){
+            return this == other || other instanceof MajorAttackMove && super.equals(other);
+        }
+        @Override
+        public String toString(){
+            return movedPiece.getPieceType() + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+        }
+    }
+
     public static final class MajorMove extends Move{
         public MajorMove(final Board board,
                          final Piece movedPiece,
@@ -139,11 +155,20 @@ public abstract class Move {
             return this.attackedPiece;
         }
     }
+
     public static final class PawnMove extends Move{
         public PawnMove(final Board board,
                         final Piece movedPiece,
                         final int destinationCoordinate) {
             super(board, movedPiece, destinationCoordinate);
+        }
+        @Override
+        public boolean equals(final Object other){
+            return this == other || other instanceof PawnMove && super.equals(other);
+        }
+        @Override
+        public String toString(){
+            return BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
     public static class PawnAttackMove extends AttackMove{
@@ -164,12 +189,35 @@ public abstract class Move {
         }
 
     }
-    public static final class PawnEnPassantAttackMove extends PawnAttackMove{
+    public static  class PawnEnPassantAttackMove extends PawnAttackMove{
         public PawnEnPassantAttackMove(final Board board,
                                        final Piece movedPiece,
                                        final int destinationCoordinate,
                                        final Piece attackedPiece) {
             super(board, movedPiece, destinationCoordinate, attackedPiece);
+        }
+        @Override //Верни, что это значение теперь равно другому
+        // или является other является объектом класса PawnEn...
+        //а полям в конструкторе суперкласса присвой значения other
+        public boolean equals(final Object other){
+            return this == other || other instanceof PawnEnPassantAttackMove && super.equals(other);
+        }
+        @Override
+        public Board execute(){
+            final Builder builder = new Builder();
+            for(final Piece piece : this.board.currentPlayer().getActivePieces()){
+                if(!this.movedPiece.equals(piece)){
+                    builder.setPiece(piece);
+                }
+            }
+            for(final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()){
+                if(!piece.equals((this.getAttackedPiece()))){
+                    builder.setPiece(piece);
+                }
+            }
+            builder.setPiece(this.movedPiece.movePiece(this));
+            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+            return builder.build();
         }
     }
     public static final class PawnJump extends Move{
@@ -237,9 +285,29 @@ public abstract class Move {
             }
             builder.setPiece((this.movedPiece.movePiece(this)));
             //TODO!!!!!
+
             builder.setPiece(new Rook(this.castleRook.getPieceAlliance(), this.castleRookDestination));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
+        }
+        @Override
+        public int hashCode(){
+            final int prime = 31;
+            int result = super.hashCode();
+            result = prime * result + this.castleRook.hashCode();
+            result = prime * result + this.castleRookDestination;
+            return result;
+        }
+        @Override
+        public boolean equals(final Object other){
+            if(this == other) {
+                return true;
+            }
+            if (!(other instanceof CastleMove)){
+                return false;
+            }
+            final CastleMove otherCastleMove = (CastleMove) other;
+            return super.equals(otherCastleMove) && this.castleRook.equals(otherCastleMove.getCastleRook());
         }
     }
     public static final class KingSideCastleMove extends CastleMove{
@@ -251,6 +319,10 @@ public abstract class Move {
                                   final int castleRookDestination) {
             super(board, movedPiece, destinationCoordinate,
                     castleRook, castleRookStart, castleRookDestination);
+        }
+        @Override
+        public boolean equals(final Object other){
+            return this == other || other instanceof KingSideCastleMove && super.equals(other);
         }
         @Override
         public String toString(){
@@ -266,6 +338,10 @@ public abstract class Move {
                                    final int castleRookDestination) {
             super(board, movedPiece, destinationCoordinate,
                     castleRook, castleRookStart, castleRookDestination);
+        }
+        @Override
+        public boolean equals(final Object other){
+            return this == other || other instanceof QueenSideCastleMove && super.equals(other);
         }
         @Override
         public String toString(){
