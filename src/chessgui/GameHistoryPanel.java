@@ -14,10 +14,12 @@ public class GameHistoryPanel extends JPanel {
     private final DataModel model;
     private final JScrollPane scrollPane;
     private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100, 40);
+    private static final Color PANEL_COLOR = Color.decode("0xA7AAAC");
 
     GameHistoryPanel() {
         this.setLayout(new BorderLayout());
         this.model = new DataModel();
+        this.setBackground(PANEL_COLOR);
         final JTable table = new JTable(model);
         table.setRowHeight(15);
         this.scrollPane = new JScrollPane(table);
