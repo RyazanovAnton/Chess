@@ -68,7 +68,7 @@ public class Pawn extends Piece{
                         (this.piecePosition + (this.pieceAlliance.getOppositeDirection()))) {
                     final Piece pieceOnCandidate = board.getEnPassantPawn();
                     if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-                        System.out.println("HRRR7");
+
                         legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                         }
                     }
@@ -88,7 +88,7 @@ public class Pawn extends Piece{
                     if (board.getEnPassantPawn().getPiecePosition() == this.piecePosition - (this.pieceAlliance.getOppositeDirection())) {
                         final Piece pieceOnCandidate = board.getEnPassantPawn();
                         if (this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
-                            System.out.println("HRRR9");
+
                             legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                             //legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
                         }

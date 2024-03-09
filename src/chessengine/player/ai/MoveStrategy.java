@@ -5,7 +5,7 @@ import chessengine.board.Move;
 
 public interface MoveStrategy {
 
-    Move execute(Board board, int depth);
+    Move execute(Board board);
 
 
 
