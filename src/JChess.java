@@ -6,7 +6,8 @@ public class JChess {
         Board board = Board.createStandardBoard();
         System.out.println(board);
 
-        Table table = new Table();
+//        Table table = new Table();
+        Table.get().show();
         System.out.println("03/03/2024");
     }
 }

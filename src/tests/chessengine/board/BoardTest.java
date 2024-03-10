@@ -4,7 +4,7 @@ import chessengine.board.Board;
 import chessengine.board.BoardUtils;
 import chessengine.board.Move;
 import chessengine.player.MoveTransition;
-import chessengine.player.ai.MinMax;
+import chessengine.player.ai.MiniMax;
 import chessengine.player.ai.MoveStrategy;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +50,7 @@ public class BoardTest {
                 BoardUtils.getCoordinateAtPosition("g4")));
         assertTrue(t3.getMoveStatus().isDone());
 
-        final MoveStrategy strategy = new MinMax(6);
+        final MoveStrategy strategy = new MiniMax(6);
         final  Move aiMove = strategy.execute(t3.getTransitionBoard());
         final  Move bestMove = Move.MoveFactory.createMove(t3.getTransitionBoard(),
                 BoardUtils.getCoordinateAtPosition("d8"),

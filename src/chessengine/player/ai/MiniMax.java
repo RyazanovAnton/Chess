@@ -4,12 +4,10 @@ import chessengine.board.Board;
 import chessengine.board.Move;
 import chessengine.player.MoveTransition;
 
-import java.sql.SQLOutput;
-
-public class MinMax implements MoveStrategy {
+public class MiniMax implements MoveStrategy {
     private final BoardEvaluator boardEvaluator;
     private final int searchDepth;
-    public MinMax(final int searchDepth){
+    public MiniMax(final int searchDepth){
 
         this.boardEvaluator = new StandardBoardEvaluator();
         this.searchDepth = searchDepth;
